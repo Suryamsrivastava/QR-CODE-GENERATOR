@@ -15,8 +15,21 @@ body {
   color: #fff;
   background-size: 300% 300%;
   padding-top: 70px;
+  animation: gradientBG 6s infinite alternate ease-in-out;
 }
+  @keyframes gradientBG {
+    0% {
+      background-position: 0% 50%;
+    }
 
+    50% {
+      background-position: 100% 50%;
+    }
+
+    100% {
+      background-position: 0% 50%;
+    }
+  }
 .header {
   position: fixed;
   top: 0;
