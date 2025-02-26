@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notification</title>
+  <link rel="stylesheet" href="/notification.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="emoji">
+      <div class="eye left"></div>
+      <div class="eye right"></div>
+      <div class="mouth"></div>
+    </div>
+    <div class="notification-box">
+      <h1>Notification</h1>
+      <p>
+        <%= message %>
+      </p>
+    </div>
+  </div>
+  <script>
+    setTimeout(() => {
+      window.location.href = "<%= redirectURL %>";
+    }, 2000);
+  </script>
+
+  <!-- <div class="container">
+    <div class="emoji">
+      <div class="eye left"></div>
+      <div class="eye right"></div>
+      <div class="mouth"></div>
+    </div>
+    <div class="message">
+      <%= message.m1 %>
+    </div>
+    <div class="sub-message"> 
+      <%=message.m2%>
+    </div>
+  </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        VANTA.FOG({
+          el: "body",
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.00,
+          minWidth: 200.00
+        })
+      });
+    </script> -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      VANTA.FOG({
+        el: "body",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00
+      })
+    });
+  </script>
+</body>
+
+</html>

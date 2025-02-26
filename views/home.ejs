@@ -1,15 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>QR Code Generator</title>
-    <link rel="stylesheet" href="/home.css">
-  </head>
-  <body>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QRXpress - QR Code Generator</title>
+  <link rel="stylesheet" href="/home.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+  <div class="header">
+    <p>QRXpress - QR Code Generator</p>
+    <p><a href="/user/logout"><i class="fa-solid fa-right-from-bracket"></i></a></p>
+  </div>
+
+  <div class="container">
     <div class="box">
       <h1>QR Code Generator</h1>
-      <form action="/url" method="post">
+      <form>
         <input type="text" id="qr-text" placeholder="Enter text or URL" />
         <select id="sizes">
           <option value="100">100x100</option>
@@ -18,75 +28,131 @@
           <option value="400">400x400</option>
         </select>
         <div class="qr-body"></div>
-
-        <div class="qr-footer">
-          <button type="submit" id="generateBtn">Generate</button>
-          <a href="#" id="downloadBtn" download="QR_Code.png">Download</a>
-        </div>
+        <button type="submit" id="generateBtn">Generate</button>
+        <button type="button" id="downloadBtn" style="display: none;">Download QR</button>
       </form>
     </div>
+
     <div class="url-clicks">
-      <table>
-        <thead>
-          <tr>
-            <th>S. No</th>
-            <th>Generated URL</th>
-          </tr>
-        </thead>
-        <tbody id="url-table-body"></tbody>
-      </table>
+      <div class="table-container">
+        <table>
+          <caption>Generated URLs</caption>
+          <thead>
+            <tr>
+              <th>S. No</th>
+              <th>QR Code & URL</th>
+              <th>Delete Data</th>
+            </tr>
+          </thead>
+          <tbody id="url-table-body">
+            <% urls.forEach((url)=> { %>
+              <tr>
+                <td>
+                  <%= url.serialNo %>
+                </td>
+                <td><a href="<%= url.redirectURL %>" target="_blank">
+                    <%= url.redirectURL %>
+                  </a></td>
+                  <td>
+                    <form action="/url/delete/<%= url._id %>?_method=DELETE" method="POST">
+                      <button class="del-btn" type="submit">Delete</button>
+                    </form>
+                  </td>
+              </tr>
+              <% }); %>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script>
-      const qrText = document.getElementById("qr-text");
-      const sizes = document.getElementById("sizes");
-      const generateBtn = document.getElementById("generateBtn");
-      const downloadBtn = document.getElementById("downloadBtn");
-      const qrBody = document.querySelector(".qr-body");
-      const urlTableBody = document.getElementById("url-table-body");
+  </div>
 
-      let size = sizes.value;
-      let count = 0;
+  <div class="footer">
+    © 2025 QRXpress. All rights reserved. | <a href="#">Privacy Policy</a>
+  </div>
 
-      generateBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        const text = qrText.value.trim();
-        if (!text) {
-          alert("Please enter a valid text or URL.");
-          return;
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    const qrText = document.getElementById("qr-text");
+    const sizes = document.getElementById("sizes");
+    const generateBtn = document.getElementById("generateBtn");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const qrBody = document.querySelector(".qr-body");
+    const urlTableBody = document.getElementById("url-table-body");
+
+    let size = sizes.value;
+    let count = 0;
+
+    generateBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const text = qrText.value.trim();
+      if (!text) {
+        alert("Please enter a valid text or URL.");
+        return;
+      }
+      try {
+        const response = await fetch("/url", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ url: text })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          count++;
+          generateQRCode(text);
+          addRowToTable(count, text);
+          alert("URL saved successfully!");
+        } else {
+          alert("Error: " + data.message);
         }
-        count++;
-        generateQRCode(text);
-        addRowToTable(count, text);
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Failed to save URL. Try again!");
+      }
+    });
+
+    sizes.addEventListener("change", (e) => {
+      size = e.target.value;
+    });
+
+    function generateQRCode(text) {
+      qrBody.innerHTML = "";
+      const qr = new QRCode(qrBody, {
+        text: text,
+        width: size,
+        height: size,
       });
 
-      sizes.addEventListener("change", (e) => {
-        size = e.target.value;
-      });
-
-      downloadBtn.addEventListener("click", () => {
+      setTimeout(() => {
         const img = qrBody.querySelector("img");
         if (img) {
-          downloadBtn.href = img.src;
-        } else {
-          alert("Please generate a QR code first.");
+          downloadBtn.style.display = "inline-block";
         }
-      });
-
-      function generateQRCode(text) {
-        qrBody.innerHTML = "";
-        new QRCode(qrBody, {
-          text: text,
-          width: size,
-          height: size,
-        });
+      }, 500);
+    }
+    function addRowToTable(count, url) {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${count}</td><td><a href="${url}" target="_blank">${url}</a></td>`;
+      urlTableBody.appendChild(row);
+    }
+    downloadBtn.addEventListener("click", () => {
+      const img = qrBody.querySelector("img");
+      if (img) {
+        const link = document.createElement("a");
+        link.href = img.src;
+        link.download = "QRCode.png";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        alert("Please generate a QR code first.");
       }
+    });
 
-      function addRowToTable(count, url) {
-        const row = document.createElement("tr");
-        row.innerHTML = `<td>${count}</td><td><a href="${url}" target="_blank">${url}</a></td>`;
-        urlTableBody.appendChild(row);
-      }
-    </script>
-  </body>
+  </script>
+
+</body>
+
 </html>
