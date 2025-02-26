@@ -257,7 +257,16 @@ body {
   color: #fad0c4;
 }
 
-@media (max-width: 900px) {
+/* @media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .url-clicks{
+    margin-bottom: 5rem;
+  }
+} */
+@media (max-width: 1200px) {
   .container {
     flex-direction: column;
     align-items: center;
