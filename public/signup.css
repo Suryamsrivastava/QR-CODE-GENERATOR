@@ -1,0 +1,153 @@
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+/* Body Styling */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 110vh;
+    background: white;
+    background-size: 300% 300%;
+    color: #fff;
+    flex-direction: column;
+    overflow: auto;
+}
+
+/* Header & Footer */
+.header,
+.footer {
+    width: 100%;
+    padding: 15px 0;
+    text-align: center;
+    font-weight: bold;
+    position: fixed;
+    left: 0;
+    background: #ff9a9e;
+    z-index: 1000;
+}
+
+.header {
+    top: 0;
+    font-size: 1.3rem;
+}
+
+.footer {
+    bottom: 0;
+    font-size: 0.9rem;
+}
+
+/* Signup Form */
+.signupForm {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 100%;
+    max-width: 360px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.signupForm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 55px rgba(0, 0, 0, 0.2);
+}
+
+.signupForm h1 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    color: #000000;
+}
+
+.signupForm label {
+    display: block;
+    text-align: left;
+    font-size: 1rem;
+    margin-top: 10px;
+    color: #000000;
+}
+
+/* Input Fields */
+.signupForm input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: rgba(224, 224, 224, 0.687) !important;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    color: black;
+    outline: none;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.signupForm input:focus {
+    background: rgba(255, 255, 255, 0.6) !important;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.signupForm input::placeholder {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+/* Fix for autofill background issue */
+input:-webkit-autofill {
+    background: rgba(255, 255, 255, 0.4) !important;
+    -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.4) inset !important;
+}
+
+/* Button Styling */
+.signupForm button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    border: none;
+    background: #ff9a9e;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.signupForm button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Links */
+.signupForm p {
+    margin-top: 15px;
+    font-size: 0.9rem;
+}
+
+.signupForm a {
+    color: #ff5a91;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.signupForm a:hover {
+    color: #ff9a9e;
+}
+
+.footer a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: #fad0c4;
+}

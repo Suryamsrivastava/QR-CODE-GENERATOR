@@ -1,12 +1,10 @@
 const express = require("express");
 const {
-  handleGenerateNewShortURL,
+  handleGenerateNewShortURL,handleDeleteURL
 } = require("../controllers/url.controller");
 
 const router = express.Router();
 
-router.post("/url", handleGenerateNewShortURL);
-
-
-
+router.post("/", handleGenerateNewShortURL);
+router.delete("/delete/:id", handleDeleteURL);
 module.exports = router;

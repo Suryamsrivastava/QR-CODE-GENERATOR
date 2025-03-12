@@ -1,129 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>QR Code Generator</title>
-    <style>
-      :root {
-        --bcg-color: #001122;
-        --primary-color: #155e75;
-        --border-radius: 8px;
-        --secondary-color: #fff;
-        --border-color: #7fb7c9;
-        --button-hover: #0e3e56;
-      }
-      body {
-        font-family: Arial, sans-serif;
-        background-color: var(--bcg-color);
-        color: var(--secondary-color);
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-      .box {
-        background-color: var(--primary-color);
-        border-radius: var(--border-radius);
-        padding: 20px;
-        width: 90%;
-        max-width: 400px;
-        margin: 20px auto;
-        text-align: center;
-      }
-      input,
-      select {
-        width: 90%;
-        margin: 12px 0;
-        padding: 10px;
-        border-radius: var(--border-radius);
-        border: 2px solid var(--border-color);
-        font-size: 16px;
-      }
-      .qr-footer {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 15px;
-      }
-      .qr-footer a {
-        text-decoration: none;
-        background-color: var(--secondary-color);
-        color: var(--primary-color);
-        padding: 10px 20px;
-        border-radius: var(--border-radius);
-        font-weight: bold;
-        font-size: 16px;
-      }
 
-      button {
-        text-decoration: none;
-        background-color: var(--secondary-color);
-        color: var(--primary-color);
-        padding: 10px 20px;
-        border-radius: var(--border-radius);
-        font-weight: bold;
-        font-size: 16px;
-      }
-      .qr-footer a:hover {
-        background-color: var(--button-hover);
-        color: var(--secondary-color);
-      }
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QRXpress - QR Code Generator</title>
+  <link rel="stylesheet" href="/home.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
 
-      .qr-body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-        min-height: 100px; /* Ensures space for alignment */
-      }
+<body>
 
-      .qr-body img {
-        max-width: 100%;
-        margin-top: 15px;
-        border-radius: var(--border-radius);
-        border: 1px solid var(--border-color);
-      }
-      .url-clicks {
-        width: 90%;
-        margin: 20px auto;
-        background-color: var(--secondary-color);
-        padding: 15px;
-        border-radius: 8px;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      th,
-      td {
-        padding: 12px 15px;
-        border: 1px solid #ddd;
-        text-align: left;
-      }
-      th {
-        background-color: var(--primary-color);
-        color: var(--secondary-color);
-      }
-      tr:nth-child(even) {
-        background-color: #f9f9f9;
-      }
-      td:first-child {
-        color: black; /* S. No content is black */
-      }
-      td a {
-        color: var(--primary-color);
-        text-decoration: none;
-      }
-      td a:hover {
-        text-decoration: underline;
-      }
-    </style>
-  </head>
-  <body>
+  <div class="header">
+    <p>QR Code Generator</p>
+    <p><a href="/user/logout"><i class="fa-solid fa-right-from-bracket"></i></a></p>
+  </div>
+
+  <div class="container">
     <div class="box">
       <h1>QR Code Generator</h1>
-      <form action="/url" method="post">
+      <form>
         <input type="text" id="qr-text" placeholder="Enter text or URL" />
         <select id="sizes">
           <option value="100">100x100</option>
@@ -132,75 +28,131 @@
           <option value="400">400x400</option>
         </select>
         <div class="qr-body"></div>
-
-        <div class="qr-footer">
-          <button type="submit" id="generateBtn">Generate</button>
-          <a href="#" id="downloadBtn" download="QR_Code.png">Download</a>
-        </div>
+        <button type="submit" id="generateBtn">Generate</button>
+        <button type="button" id="downloadBtn" style="display: none;">Download QR</button>
       </form>
     </div>
+
     <div class="url-clicks">
-      <table>
-        <thead>
-          <tr>
-            <th>S. No</th>
-            <th>Generated URL</th>
-          </tr>
-        </thead>
-        <tbody id="url-table-body"></tbody>
-      </table>
+      <div class="table-container">
+        <table>
+          <caption>Generated URLs</caption>
+          <thead>
+            <tr>
+              <th>S. No</th>
+              <th>QR Code & URL</th>
+              <th>Delete Data</th>
+            </tr>
+          </thead>
+          <tbody id="url-table-body">
+            <% urls.forEach((url)=> { %>
+              <tr>
+                <td>
+                  <%= url.serialNo %>
+                </td>
+                <td><a href="<%= url.redirectURL %>" target="_blank">
+                    <%= url.redirectURL %>
+                  </a></td>
+                  <td>
+                    <form action="/url/delete/<%= url._id %>?_method=DELETE" method="POST">
+                      <button class="del-btn" type="submit">Delete</button>
+                    </form>
+                  </td>
+              </tr>
+              <% }); %>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script>
-      const qrText = document.getElementById("qr-text");
-      const sizes = document.getElementById("sizes");
-      const generateBtn = document.getElementById("generateBtn");
-      const downloadBtn = document.getElementById("downloadBtn");
-      const qrBody = document.querySelector(".qr-body");
-      const urlTableBody = document.getElementById("url-table-body");
+  </div>
 
-      let size = sizes.value;
-      let count = 0;
+  <div class="footer">
+    © 2025 QR Code Generator. All rights reserved. | <a href="#">Privacy Policy</a>
+  </div>
 
-      generateBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        const text = qrText.value.trim();
-        if (!text) {
-          alert("Please enter a valid text or URL.");
-          return;
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    const qrText = document.getElementById("qr-text");
+    const sizes = document.getElementById("sizes");
+    const generateBtn = document.getElementById("generateBtn");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const qrBody = document.querySelector(".qr-body");
+    const urlTableBody = document.getElementById("url-table-body");
+
+    let size = sizes.value;
+    let count = 0;
+
+    generateBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const text = qrText.value.trim();
+      if (!text) {
+        alert("Please enter a valid text or URL.");
+        return;
+      }
+      try {
+        const response = await fetch("/url", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ url: text })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          count++;
+          generateQRCode(text);
+          addRowToTable(count, text);
+          alert("URL saved successfully!");
+        } else {
+          alert("Error: " + data.message);
         }
-        count++;
-        generateQRCode(text);
-        addRowToTable(count, text);
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Failed to save URL. Try again!");
+      }
+    });
+
+    sizes.addEventListener("change", (e) => {
+      size = e.target.value;
+    });
+
+    function generateQRCode(text) {
+      qrBody.innerHTML = "";
+      const qr = new QRCode(qrBody, {
+        text: text,
+        width: size,
+        height: size,
       });
 
-      sizes.addEventListener("change", (e) => {
-        size = e.target.value;
-      });
-
-      downloadBtn.addEventListener("click", () => {
+      setTimeout(() => {
         const img = qrBody.querySelector("img");
         if (img) {
-          downloadBtn.href = img.src;
-        } else {
-          alert("Please generate a QR code first.");
+          downloadBtn.style.display = "inline-block";
         }
-      });
-
-      function generateQRCode(text) {
-        qrBody.innerHTML = "";
-        new QRCode(qrBody, {
-          text: text,
-          width: size,
-          height: size,
-        });
+      }, 500);
+    }
+    function addRowToTable(count, url) {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${count}</td><td><a href="${url}" target="_blank">${url}</a></td>`;
+      urlTableBody.appendChild(row);
+    }
+    downloadBtn.addEventListener("click", () => {
+      const img = qrBody.querySelector("img");
+      if (img) {
+        const link = document.createElement("a");
+        link.href = img.src;
+        link.download = "QRCode.png";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        alert("Please generate a QR code first.");
       }
+    });
 
-      function addRowToTable(count, url) {
-        const row = document.createElement("tr");
-        row.innerHTML = `<td>${count}</td><td><a href="${url}" target="_blank">${url}</a></td>`;
-        urlTableBody.appendChild(row);
-      }
-    </script>
-  </body>
+  </script>
+
+</body>
+
 </html>

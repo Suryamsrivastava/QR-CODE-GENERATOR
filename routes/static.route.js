@@ -7,7 +7,7 @@ router.get("/", async (req, res) => {
     if (!req.user) return res.redirect("/login");
 
     const allurls = await URL.find({ createdBy: req.user._id });
-    const sizes = [100, 200, 300, 400]; // Example sizes
+    const sizes = [100, 200, 300, 400];
 
     return res.render("home", {
       title: 'Home',
