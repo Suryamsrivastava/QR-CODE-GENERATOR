@@ -124,7 +124,7 @@
     <div class="box">
       <h1>QR Code Generator</h1>
       <form action="/url" method="post">
-        <input type="text" id="qr-text" placeholder="Enter text or URL" />
+        <input type="text" id="qr-text" name="url" placeholder="Enter text or URL" />
         <select id="sizes">
           <option value="100">100x100</option>
           <option value="200">200x200</option>
@@ -134,7 +134,8 @@
         <div class="qr-body"></div>
 
         <div class="qr-footer">
-          <button type="submit" id="generateBtn">Generate</button>
+          <button type="button" id="generateBtn">Generate QR</button>
+          <button type="submit">Shorten URL</button>
           <a href="#" id="downloadBtn" download="QR_Code.png">Download</a>
         </div>
       </form>
@@ -144,10 +145,25 @@
         <thead>
           <tr>
             <th>S. No</th>
-            <th>Generated URL</th>
+            <th>Short URL</th>
+            <th>Original URL</th>
+            <th>Visits</th>
           </tr>
         </thead>
-        <tbody id="url-table-body"></tbody>
+        <tbody>
+          <% if (typeof urls !== 'undefined' && urls.length > 0) { %>
+            <% urls.forEach(function(url, i) { %>
+            <tr>
+              <td><%= i + 1 %></td>
+              <td><a href="/<%= url.shortId %>" target="_blank">/<%= url.shortId %></a></td>
+              <td><a href="<%= url.redirectURL %>" target="_blank"><%= url.redirectURL %></a></td>
+              <td><%= url.visitHistory.length %></td>
+            </tr>
+            <% }) %>
+          <% } else { %>
+            <tr><td colspan="4" style="text-align:center;color:#333;">No URLs shortened yet.</td></tr>
+          <% } %>
+        </tbody>
       </table>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -157,21 +173,16 @@
       const generateBtn = document.getElementById("generateBtn");
       const downloadBtn = document.getElementById("downloadBtn");
       const qrBody = document.querySelector(".qr-body");
-      const urlTableBody = document.getElementById("url-table-body");
 
       let size = sizes.value;
-      let count = 0;
 
-      generateBtn.addEventListener("click", (e) => {
-        e.preventDefault();
+      generateBtn.addEventListener("click", () => {
         const text = qrText.value.trim();
         if (!text) {
           alert("Please enter a valid text or URL.");
           return;
         }
-        count++;
         generateQRCode(text);
-        addRowToTable(count, text);
       });
 
       sizes.addEventListener("change", (e) => {
@@ -194,12 +205,6 @@
           width: size,
           height: size,
         });
-      }
-
-      function addRowToTable(count, url) {
-        const row = document.createElement("tr");
-        row.innerHTML = `<td>${count}</td><td><a href="${url}" target="_blank">${url}</a></td>`;
-        urlTableBody.appendChild(row);
       }
     </script>
   </body>

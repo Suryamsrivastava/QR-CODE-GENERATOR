@@ -5,7 +5,7 @@ const {
 
 const router = express.Router();
 
-router.post("/url", handleGenerateNewShortURL);
+router.post("/", handleGenerateNewShortURL);
 
 
 

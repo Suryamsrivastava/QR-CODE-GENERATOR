@@ -101,6 +101,9 @@
 <body>
     <div class="loginForm">
         <h1>Log In</h1>
+        <% if (locals.error) { %>
+            <p style="color:#e53e3e;margin-bottom:10px;font-size:0.9rem;"><%= error %></p>
+        <% } %>
         <form action="/user/login" method="POST">
             <input type="email" name="email" placeholder="Email" required>
             <input type="password" name="password" placeholder="Password" required>
